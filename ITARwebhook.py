@@ -171,45 +171,62 @@ def estrai_dati_sommari():
     # Parsing dei dati sommari
     controldict = dict()
     newmemberlist = list()
+    meritdict = dict()
+    meritdict["all"]["most_battles"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["all"]["most_victories"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["all"]["most_kills"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["all"]["most_time"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["air"]["most_battles"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["air"]["most_victories"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["air"]["most_kills"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["air"]["most_time"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["ground"]["most_battles"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["ground"]["most_victories"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["ground"]["most_kills"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["ground"]["most_time"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["sea"]["most_battles"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["sea"]["most_victories"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["sea"]["most_kills"] = {["nome"]="Nessuno!";["valore"]=0}
+    meritdict["sea"]["most_time"] = {["nome"]="Nessuno!";["valore"]=0}
+
+    # Supporto a validazione
+    def validate(element):
+        if element.isdigit():
+            return int(element)
+        else:
+            return 0
     
     for member in memberdict:
         # Valori di controllo
-        air_arcade_battles = str(memberdict[member]["ab"]["air"]["Air battles"])
-        if air_arcade_battles.isdigit():
-            air_arcade_battles = int(air_arcade_battles)
-        else:
-            air_arcade_battles = 0
-        ground_arcade_battles = str(memberdict[member]["ab"]["ground"]["Ground battles"])
-        if ground_arcade_battles.isdigit():
-            ground_arcade_battles = int(ground_arcade_battles)
-        else:
-            ground_arcade_battles = 0
-        sea_arcade_battles = str(memberdict[member]["ab"]["sea"]["Naval battles"])
-        if sea_arcade_battles.isdigit():
-            sea_arcade_battles = int(sea_arcade_battles)
-        else:
-            sea_arcade_battles = 0
+        # Meriti
+        air_realistic_battles = validate(str(memberdict[member]["rb"]["air"]["Air battles"]))
+        air_realistic_battles_victories = validate(str(memberdict[member]["rb"]["air"]["Air battles"]))
+        air_realistic_battles_kills = validate(str(memberdict[member]["rb"]["air"]["Total targets destroyed"]))
+        air_realistic_battles_time = validate(str(memberdict[member]["rb"]["air"]["Air battles"]))
+        ground_realistic_battles = validate(str(memberdict[member]["rb"]["ground"]["Ground battles"]))
+        sea_realistic_battles = validate(str(memberdict[member]["rb"]["sea"]["Naval battles"]))
+        # Demeriti
+        air_arcade_battles = validate(str(memberdict[member]["ab"]["air"]["Air battles"]))
+        ground_arcade_battles = validate(str(memberdict[member]["ab"]["ground"]["Ground battles"]))
+        sea_arcade_battles = validate(str(memberdict[member]["ab"]["sea"]["Naval battles"]))
 
         # Se non nei dati, tira dentro
         if not member in dati["membri"]:
             dati["membri"][member] = memberdict[member]
             newmemberlist.append(member)
+
+        # Valori di confronto
+        # Meriti
+        old_air_realistic_battles = validate(str(dati[member]["rb"]["air"]["Air battles"]))
+        old_ground_realistic_battles = validate(str(dati[member]["rb"]["ground"]["Ground battles"]))
+        old_sea_realistic_battles = validate(str(dati[member]["rb"]["sea"]["Naval battles"]))
+        # Demeriti
+        old_air_arcade_battles = validate(str(dati["membri"][member]["ab"]["air"]["Air battles"]))
+        old_ground_arcade_battles = validate(str(dati["membri"][member]["ab"]["ground"]["Ground battles"]))
+        old_sea_arcade_battles = validate(str(dati["membri"][member]["ab"]["sea"]["Naval battles"]))
         
-        old_air_arcade_battles = str(dati["membri"][member]["ab"]["air"]["Air battles"])
-        if old_air_arcade_battles.isdigit():
-            old_air_arcade_battles = int(old_air_arcade_battles)
-        else:
-            old_air_arcade_battles = 0
-        old_ground_arcade_battles = str(dati["membri"][member]["ab"]["ground"]["Ground battles"])
-        if old_ground_arcade_battles.isdigit():
-            old_ground_arcade_battles = int(old_ground_arcade_battles)
-        else:
-            old_ground_arcade_battles = 0
-        old_sea_arcade_battles = str(dati["membri"][member]["ab"]["sea"]["Naval battles"])
-        if old_sea_arcade_battles.isdigit():
-            old_sea_arcade_battles = int(old_sea_arcade_battles)
-        else:
-            old_sea_arcade_battles = 0
+        # Controlli per meriti
+        if air_
         
         # Controlli per le arcade
         if air_arcade_battles > old_air_arcade_battles:
@@ -238,13 +255,39 @@ def estrai_dati_sommari():
     contentstr = contentstr + "============\n"
 
     # Nuovi membri
+    contentstr = contentstr + "Nuovi Arrivi\n"
     for member in newmemberlist:
         contentstr = contentstr + "Benvenuto al giocatore "+member+" nella squadriglia!\n"
     if len(newmemberlist) == 0:
         contentstr = contentstr + "Nessun nuovo membro in questo periodo\n"
     contentstr = contentstr + "============\n"
 
+    # Lista meriti
+    contentstr = contentstr + "Lista Meriti\n"
+    contentstr = contentstr + "Globale\n"
+    contentstr = contentstr + "Più partite: "+""+"\n"
+    contentstr = contentstr + "Più vittorie: "+""+"\n"
+    contentstr = contentstr + "Più uccisioni: "+""+"\n"
+    contentstr = contentstr + "Più tempo in partita: "+""+"\n"
+    contentstr = contentstr + "Aria\n"
+    contentstr = contentstr + "Più partite: "+""+"\n"
+    contentstr = contentstr + "Più vittorie: "+""+"\n"
+    contentstr = contentstr + "Più uccisioni: "+""+"\n"
+    contentstr = contentstr + "Più tempo in partita: "+""+"\n"
+    contentstr = contentstr + "Terra\n"
+    contentstr = contentstr + "Più partite: "+""+"\n"
+    contentstr = contentstr + "Più vittorie: "+""+"\n"
+    contentstr = contentstr + "Più uccisioni: "+""+"\n"
+    contentstr = contentstr + "Più tempo in partita: "+""+"\n"
+    contentstr = contentstr + "Mare\n"
+    contentstr = contentstr + "Più partite: "+""+"\n"
+    contentstr = contentstr + "Più vittorie: "+""+"\n"
+    contentstr = contentstr + "Più uccisioni: "+""+"\n"
+    contentstr = contentstr + "Più tempo in partita: "+""+"\n"
+    contentstr = contentstr + "============\n"
+
     # Lista arcade
+    contentstr = contentstr + "Lista Disciplinare\n"
     for member in controldict:
         if "air" in controldict[member]:
             contentstr = contentstr + "Il giocatore "+member+" ha effettuato "+str(controldict[member]["air"])+" partite aeree in arcade dall'ultimo controllo\n"
@@ -334,8 +377,11 @@ def estrai_dati_precisi(utenti):
         for member in utenti:
             #https://warthunder.com/en/tournament/replay/type/replays?Filter%5Bnick%5D=NICK_HERE&action=search"
             # Try to enter the replay page
+            #replaypage = driver.get(WT_REPLAY+"type/replays?Filter[statistic_group]=aircraft&Filter[game_mode][]=arcade&Filter[nick]="+member+"&action=search")
+            #replaypage = driver.get(WT_REPLAY+"type/replays?Filter[statistic_group]=tank&Filter[game_mode][]=arcade&Filter[nick]="+member+"&action=search")
             replaypage = driver.get(WT_REPLAY+"type/replays?Filter[game_mode][]=arcade&Filter[nick]="+member+"&action=search")
             print(member)
+            # Note 25 entries per page
         
         while True:
             pass
